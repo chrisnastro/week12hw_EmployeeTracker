@@ -90,12 +90,28 @@ function addEmployee() {
             name: "managerId"
         }
     ])
-    .then(function(answer) {
+        .then(function (answer) {
 
-        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.empFirstName, answer.empLastName, answer.roleId, answer.managerId], function(err, res) {
-            if (err) throw err;
-            console.table(res);
-            startPage();
+            connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [answer.empFirstName, answer.empLastName, answer.roleId, answer.managerId], function (err, res) {
+                if (err) throw err;
+                console.table(res);
+                startPage();
+            })
         })
-    })
+}
+
+function addDepartment() {
+    inquirer
+        .prompt({
+            type: "input",
+            message: "What is the department name?",
+            name: "deptName"
+        })
+        .then(function (answer) {
+            connection.query("INSERT INTO department (name) VALUES (?)", [answer.deptName], function (err, res) {
+                if (err) throw err;
+                console.table(res)
+                startPage()
+            })
+        })
 }
