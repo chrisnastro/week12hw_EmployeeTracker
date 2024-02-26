@@ -169,3 +169,34 @@ function updateEmployeeRole() {
     });
 }
 
+function viewDepartments() {
+    let query = "SELECT * FROM department";
+    connection.query(function(err, res) {
+        if (err) throw err;
+            console.table(res);
+            startPage();
+    });
+}
+
+function viewRoles() {
+    let query = "SELECT * FROM role";
+    connection.query(function(err, res) {
+        if (err) throw err;
+            console.table(res);
+            startPage();
+    });
+}
+
+function viewEmployees() {
+    let query = "SELECT * FROM employee";
+    connection.query(function(err, res) {
+        if (err) throw err;
+            console.table(res);
+            startPage();
+    });
+}
+
+function quit() {
+    connection.end();
+    process.exit();
+}
