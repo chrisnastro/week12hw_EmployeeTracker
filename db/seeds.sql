@@ -5,7 +5,7 @@ VALUES  ("Accounting"),
         ("IT"),
         ("Distribution");
 
-INSERT INTO role (title, salary, department_id)
+INSERT INTO name (title, salary, department_id)
 VALUE   ("Salesperson", 100000.00, 2),
         ("Market Manager", 90000.00, 3),
         ("Technician", 75000.00, 4),

@@ -20,7 +20,7 @@ connection.connect(function (err) {
 
 function startPage() {
     inquirer
-        .createPromptModule({
+        .prompt({
             type: "list",
             choices: [
                 "Add Employee",
@@ -68,7 +68,7 @@ function startPage() {
 
 function addEmployee() {
     inquirer
-    prompt([
+    .prompt([
         {
             type: "input",
             message: "Enter employee's first name:",
