@@ -144,3 +144,28 @@ function addRole() {
                 });
         });
 }
+
+function updateEmployeeRole() {
+    inquirer
+    .prompt([
+        {
+            type: "input",
+            message: "Enter the employee to update:",
+            name: "eeUpdate"
+        },
+        {
+            type: "input",
+            message: "Enter the rold you'd like to update to:",
+            name: "updateRole"
+        }
+    ])
+    .then(function(answer) {
+        connection.query("UPDATE employee SET role_id=? WHERE first_name= ?", [answer.updateRole, answer.eeUpdate],
+        function(err, res) {
+            if (err) throw err;
+            console.table(res);
+            startPage();
+        });
+    });
+}
+
