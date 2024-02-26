@@ -104,14 +104,43 @@ function addDepartment() {
     inquirer
         .prompt({
             type: "input",
-            message: "What is the department name?",
+            message: "Enter the department name:",
             name: "deptName"
         })
         .then(function (answer) {
-            connection.query("INSERT INTO department (name) VALUES (?)", [answer.deptName], function (err, res) {
-                if (err) throw err;
-                console.table(res)
-                startPage()
-            })
+            connection.query("INSERT INTO department (name) VALUES (?)", [answer.deptName],
+                function (err, res) {
+                    if (err) throw err;
+                    console.table(res)
+                    startPage()
+                })
         })
+}
+
+function addRole() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Enter the role title:",
+                name: "roleName"
+            },
+            {
+                type: "input",
+                message: "Enter the salary for this role:",
+                name: "roleSalary"
+            },
+            {
+                type: "input",
+                message: "Enter department ID number:",
+                name: "deptId"
+            }
+        ])
+        .then(function (answer) {
+            connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answer.roleName, answer.roleSalary, answer.deptId],
+                function (err, res) {
+                    console.table(res);
+                    startPage();
+                });
+        });
 }
