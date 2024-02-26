@@ -1,6 +1,6 @@
 const inquirer = require("inquirer");
-const consoleTable = require("console.table");
 const mysql = require("mysql");
+const consoleTable = require("console.table");
 const db = require(".");
 
 const connection = mysql.createConnection({
@@ -23,12 +23,12 @@ function startPage() {
         .prompt({
             type: "list",
             choices: [
+                "View All Departments",
+                "View All Roles",
+                "View All Employees",
                 "Add Employee",
                 "Add Department",
                 "Add Role",
-                "View Employees",
-                "View Departments",
-                "View Roles",
                 "Update Employee Role",
                 "Exit"
             ],
@@ -36,8 +36,7 @@ function startPage() {
             name: "option"
         })
         .then(function (result) {
-            console.log(result.option + "selected.");
-
+            console.log(result.option + " selected.");
             switch (result.option) {
                 case "View All Departments":
                     viewDepartments();
