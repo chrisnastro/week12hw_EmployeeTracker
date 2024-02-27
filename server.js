@@ -107,7 +107,7 @@ function addDepartment() {
             name: "deptName"
         })
         .then(function (answer) {
-            connection.query("INSERT INTO department (name) VALUES (?)", [answer.deptName],
+            connection.query("INSERT INTO department (department_name) VALUES (?)", [answer.deptName],
                 function (err, res) {
                     if (err) throw err;
                     console.table(res)
@@ -145,27 +145,56 @@ function addRole() {
 }
 
 function updateEmployeeRole() {
-    inquirer
-        .prompt([
-            {
-                type: "input",
-                message: "Enter the employee to update:",
-                name: "eeUpdate"
-            },
-            {
-                type: "input",
-                message: "Enter the role you'd like to update to:",
-                name: "updateRole"
-            }
-        ])
-        .then(function (answer) {
-            connection.query("UPDATE employee SET role_id=? WHERE first_name= ?", [answer.updateRole, answer.eeUpdate],
-                function (err, res) {
-                    if (err) throw err;
-                    console.table(res);
-                    startPage();
+    const queryEmployees =
+        "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = role.id";
+    const queryRoles = "SELECT * FROM role";
+    connection.query(queryEmployees, (err, resEmployees) => {
+        if (err) throw err;
+        connection.query(queryRoles, (err, resRoles) => {
+            if (err) throw err;
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        name: "employee",
+                        message: "Select the employee to update:",
+                        choices: resEmployees.map(
+                            (employee) =>
+                                `${employee.first_name} ${employee.last_name}`
+                        ),
+                    },
+                    {
+                        type: "list",
+                        name: "role",
+                        message: "Select the new role:",
+                        choices: resRoles.map((role) => role.title),
+                    },
+                ])
+                .then((answers) => {
+                    const employee = resEmployees.find(
+                        (employee) =>
+                            `${employee.first_name} ${employee.last_name}` ===
+                            answers.employee
+                    );
+                    const role = resRoles.find(
+                        (role) => role.title === answers.role
+                    );
+                    const query =
+                        "UPDATE employee SET role_id = ? WHERE id = ?";
+                    connection.query(
+                        query,
+                        [role.id, employee.id],
+                        (err, res) => {
+                            if (err) throw err;
+                            console.log(
+                                `Updated ${employee.first_name} ${employee.last_name}'s role to ${role.title} in the database!`
+                            );
+                            startPage();
+                        }
+                    );
                 });
         });
+    });
 }
 
 function viewDepartments() {
@@ -178,19 +207,28 @@ function viewDepartments() {
 }
 
 function viewRoles() {
-    let query = "SELECT * FROM role";
-    connection.query(query, function (err, res) {
+    const query = "SELECT role.title, role.id, department.department_name, role.salary from role join department on role.department_id = department.id";
+    connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
+        // restart the application
         startPage();
     });
 }
 
+// function to view all employees
 function viewEmployees() {
-    let query = "SELECT * FROM employee";
-    connection.query(query, function (err, res) {
+    const query = `
+    SELECT e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+    FROM employee e
+    LEFT JOIN role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id
+    LEFT JOIN employee m ON e.manager_id = m.id;
+    `;
+    connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
+        // restart the application
         startPage();
     });
 }
